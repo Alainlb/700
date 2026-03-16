@@ -219,6 +219,14 @@ body {
   content: none;
 }
 
+.links-tagline {
+  color: var(--text);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .links a:hover {
   color: #c4c4c4;
 }
@@ -314,6 +322,11 @@ body {
 
   .links a::before {
     content: none;
+  }
+
+  .links-tagline {
+    font-size: 10px;
+    letter-spacing: 0.08em;
   }
 }
 
