@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEVENHUNDRED</title>
+    <meta name="description" content="SEVENHUNDRED — Creative studio. Direction, production & post." />
+    <meta name="theme-color" content="#050609" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="SEVENHUNDRED" />
+    <meta property="og:description" content="Creative studio. Direction, production & post." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://weare700.com" />
+    <meta property="og:image" content="https://weare700.com/assets/og-image.jpg" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" href="assets/static/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/static/apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="styles.css?v=20260313-1" />
+  </head>
+  <body>
+    <video class="bg-video bg-video-desktop" autoplay muted loop playsinline preload="auto">
+      <source src="assets/backgrounds/desktop/background.mp4" type="video/mp4" />
+    </video>
+    <video class="bg-video bg-video-mobile" autoplay muted loop playsinline preload="auto">
+      <source src="assets/backgrounds/mobile/background.mp4" type="video/mp4" />
+    </video>
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <main class="frame">
+      <header class="brand" aria-label="SEVENHUNDRED">
+        <img
+          class="brand-asset brand-desktop"
+          data-src="assets/static/headers/desktop/header.svg"
+          src="assets/static/headers/desktop/header.svg"
+          alt="SEVENHUNDRED"
+        />
+        <img
+          class="brand-asset brand-mobile"
+          data-src="assets/static/headers/mobile/header.png"
+          src="assets/static/headers/mobile/header.png"
+          alt="SEVENHUNDRED"
+        />
+      </header>
+
+      <section class="project-cloud" id="project-cloud" aria-label="Proyectos"></section>
+
+      <nav class="links" aria-label="Footer de contacto">
+        <a href="about.html">ABOUT</a>
+        <a href="tel:+34000000000">+34 000 000 000</a>
+        <a href="mailto:hello@sevenhundred.com">HELLO@SEVENHUNDRED.COM</a>
+      </nav>
+    </main>
+
+    <script>
+      const mobileQuery = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)");
+      const brand = document.querySelector(".brand");
+      const desktopHeader = document.querySelector(".brand-desktop");
+      const mobileHeader = document.querySelector(".brand-mobile");
+      const backgroundVideos = document.querySelectorAll(".bg-video");
+
+      const isMissing = (img) => img && img.dataset.missing === "1";
+      const isKnown = (img) => img && img.dataset.missing !== undefined;
+
+      const setMissingState = (img, missing) => {
+        if (!img) return;
+        img.dataset.missing = missing ? "1" : "0";
+      };
+
+      const updateBrandVisibility = () => {
+        const activeHeader = mobileQuery.matches ? mobileHeader : desktopHeader;
+        if (!activeHeader || !isKnown(activeHeader) || isMissing(activeHeader)) {
+          brand.style.display = "none";
+          return;
+        }
+        brand.style.display = "";
+      };
+
+      const bustCache = (img) => {
+        if (!img) return;
+        const raw = img.dataset.src || img.getAttribute("src") || "";
+        const base = raw.split("?")[0];
+        img.dataset.src = base;
+        img.src = `${base}?v=${Date.now()}`;
+      };
+
+      const watchHeader = (img) => {
+        if (!img) return;
+
+        img.addEventListener("load", () => {
+          setMissingState(img, false);
+          updateBrandVisibility();
+        });
+
+        img.addEventListener("error", () => {
+          setMissingState(img, true);
+          img.style.display = "none";
+          updateBrandVisibility();
+        });
+      };
+
+      watchHeader(desktopHeader);
+      watchHeader(mobileHeader);
+      bustCache(desktopHeader);
+      bustCache(mobileHeader);
+      updateBrandVisibility();
+
+      backgroundVideos.forEach((video) => {
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.preload = "auto";
+
+        const ensurePlaying = () => {
+          if (video.paused) {
+            video.play().catch(() => {});
+          }
+        };
+
+        video.addEventListener(
+          "loadeddata",
+          () => {
+            video.classList.add("is-ready");
+            ensurePlaying();
+          },
+          { once: true }
+        );
+        video.addEventListener("canplay", () => {
+          video.classList.add("is-ready");
+          ensurePlaying();
+        });
+        video.addEventListener("error", () => {
+          video.classList.remove("is-ready");
+          video.style.display = "none";
+        });
+        const source = video.querySelector("source");
+        if (source) {
+          source.addEventListener("error", () => {
+            video.classList.remove("is-ready");
+            video.style.display = "none";
+          });
+        }
+
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden) ensurePlaying();
+        });
+
+        ensurePlaying();
+      });
+
+      const projectCloud = document.getElementById("project-cloud");
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      const MIN_WINDOW_WIDTH = 180;
+      const MIN_WINDOW_HEIGHT = 118;
+      const fallbackPositions = [
+        { x: 14, y: 23 },
+        { x: 81, y: 23 },
+        { x: 40, y: 41 },
+        { x: 78, y: 49 },
+        { x: 22, y: 60 },
+        { x: 38, y: 82 },
+        { x: 77, y: 81 },
+      ];
+
+      let topZ = 20;
+      let interaction = null;
+
+      const basename = (value) => String(value || "").split("/").pop() || "";
+      const stripExt = (value) => basename(value).replace(/\.[^/.]+$/, "");
+      const toTitleFromFilename = (value) =>
+        stripExt(value)
+          .replace(/[_-]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+          .toUpperCase();
+
+      const joinPath = (root, leaf) => {
+        const a = String(root || "").replace(/\/+$/, "");
+        const b = String(leaf || "").replace(/^\/+/, "");
+        if (!a) return b;
+        if (!b) return a;
+        return `${a}/${b}`;
+      };
+
+      const normalizeProject = (raw, index) => {
+        const p = fallbackPositions[index % fallbackPositions.length];
+        const folder = String(raw.folder || "").replace(/\/+$/, "");
+        const file = raw.file || "video.mp4";
+        const video = raw.video || joinPath(folder, file);
+        const title = raw.title || toTitleFromFilename(file || video) || "UNTITLED PROJECT";
+
+        return {
+          id: raw.id || `project-${index + 1}`,
+          title,
+          video,
+          poster: raw.poster || joinPath(folder, "poster.jpg"),
+          x: Number.isFinite(raw.x) ? raw.x : p.x,
+          y: Number.isFinite(raw.y) ? raw.y : p.y,
+          w: Number.isFinite(raw.w) ? raw.w : 248,
+          h: Number.isFinite(raw.h) ? raw.h : 154,
+        };
+      };
+
+      const setWindowRect = (element, left, top, width, height) => {
+        const safeWidth = clamp(width, MIN_WINDOW_WIDTH, window.innerWidth);
+        const safeHeight = clamp(height, MIN_WINDOW_HEIGHT, window.innerHeight);
+        const maxX = window.innerWidth - safeWidth;
+        const maxY = window.innerHeight - safeHeight;
+        element.style.left = `${clamp(left, 0, maxX)}px`;
+        element.style.top = `${clamp(top, 0, maxY)}px`;
+        element.style.width = `${safeWidth}px`;
+        element.style.height = `${safeHeight}px`;
+      };
+
+      const bringToFront = (element) => {
+        topZ += 1;
+        element.style.zIndex = String(topZ);
+        document.querySelectorAll(".project-window").forEach((item) => {
+          item.classList.toggle("active", item === element);
+        });
+      };
+
+      const beginDrag = (event, element) => {
+        const rect = element.getBoundingClientRect();
+        interaction = {
+          type: "drag",
+          element,
+          startX: event.clientX,
+          startY: event.clientY,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          dir: "",
+        };
+        element.classList.add("dragging");
+      };
+
+      const beginResize = (event, element, dir) => {
+        const rect = element.getBoundingClientRect();
+        interaction = {
+          type: "resize",
+          element,
+          startX: event.clientX,
+          startY: event.clientY,
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+          dir,
+        };
+        element.classList.add("resizing");
+      };
+
+      const onPointerMove = (event) => {
+        if (!interaction) return;
+
+        const dx = event.clientX - interaction.startX;
+        const dy = event.clientY - interaction.startY;
+
+        if (interaction.type === "drag") {
+          setWindowRect(
+            interaction.element,
+            interaction.left + dx,
+            interaction.top + dy,
+            interaction.width,
+            interaction.height
+          );
+          return;
+        }
+
+        let left = interaction.left;
+        let top = interaction.top;
+        let width = interaction.width;
+        let height = interaction.height;
+        const { dir } = interaction;
+
+        if (dir.includes("e")) width = interaction.width + dx;
+        if (dir.includes("s")) height = interaction.height + dy;
+        if (dir.includes("w")) {
+          width = interaction.width - dx;
+          left = interaction.left + dx;
+        }
+        if (dir.includes("n")) {
+          height = interaction.height - dy;
+          top = interaction.top + dy;
+        }
+
+        setWindowRect(interaction.element, left, top, width, height);
+      };
+
+      const onPointerUp = () => {
+        if (!interaction) return;
+        interaction.element.classList.remove("dragging", "resizing");
+        interaction = null;
+      };
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+      window.addEventListener("pointercancel", onPointerUp);
+
+      const makeResizeHandle = (dir, windowEl) => {
+        const handle = document.createElement("span");
+        handle.className = `project-resize-handle project-resize-${dir}`;
+        handle.dataset.dir = dir;
+        handle.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          bringToFront(windowEl);
+          beginResize(event, windowEl, dir);
+        });
+        return handle;
+      };
+
+      const renderProjectWindow = (project) => {
+        const windowEl = document.createElement("article");
+        windowEl.className = "project-window";
+        windowEl.dataset.projectId = project.id;
+
+        const bar = document.createElement("header");
+        bar.className = "project-window-bar";
+
+        const title = document.createElement("p");
+        title.className = "project-window-title";
+        title.textContent = project.title;
+        bar.appendChild(title);
+
+        const content = document.createElement("div");
+        content.className = "project-window-content";
+
+        const video = document.createElement("video");
+        video.className = "project-window-video";
+        video.src = project.video;
+        video.poster = project.poster || "";
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.addEventListener("error", () => {
+          windowEl.style.display = "none";
+        });
+
+        content.appendChild(video);
+        windowEl.appendChild(bar);
+        windowEl.appendChild(content);
+        windowEl.appendChild(makeResizeHandle("nw", windowEl));
+        windowEl.appendChild(makeResizeHandle("ne", windowEl));
+        windowEl.appendChild(makeResizeHandle("sw", windowEl));
+        windowEl.appendChild(makeResizeHandle("se", windowEl));
+
+        windowEl.addEventListener("pointerdown", () => bringToFront(windowEl));
+        bar.addEventListener("pointerdown", (event) => {
+          if (event.button !== 0) return;
+          event.preventDefault();
+          bringToFront(windowEl);
+          beginDrag(event, windowEl);
+        });
+
+        projectCloud.appendChild(windowEl);
+
+        const left = (window.innerWidth * project.x) / 100 - project.w / 2;
+        const top = (window.innerHeight * project.y) / 100 - project.h / 2;
+        setWindowRect(windowEl, left, top, project.w, project.h);
+      };
+
+      const renderProjectMobileItem = (project) => {
+        const item = document.createElement("article");
+        item.className = "project-mobile-item";
+        item.dataset.projectId = project.id;
+        item.title = project.title;
+
+        const video = document.createElement("video");
+        video.className = "project-mobile-video";
+        video.src = project.video;
+        video.poster = project.poster || "";
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.controls = false;
+        video.addEventListener(
+          "loadeddata",
+          () => {
+            video.play().catch(() => {});
+          },
+          { once: true }
+        );
+        video.addEventListener("error", () => {
+          item.style.display = "none";
+        });
+
+        item.appendChild(video);
+        return item;
+      };
+
+      const loadProjects = async () => {
+        try {
+          const response = await fetch(`assets/projects/manifest.json?v=${Date.now()}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          const projects = Array.isArray(data.projects) ? data.projects : [];
+          const normalized = projects.map((project, index) => normalizeProject(project, index));
+          projectCloud.innerHTML = "";
+
+          if (mobileQuery.matches) {
+            normalized.forEach((project) => {
+              projectCloud.appendChild(renderProjectMobileItem(project));
+            });
+            return;
+          }
+
+          normalized.forEach((project) => renderProjectWindow(project));
+        } catch (error) {
+          console.error("Project manifest not loaded", error);
+        }
+      };
+
+      window.addEventListener("resize", () => {
+        document.querySelectorAll(".project-window").forEach((windowEl) => {
+          const rect = windowEl.getBoundingClientRect();
+          setWindowRect(windowEl, rect.left, rect.top, rect.width, rect.height);
+        });
+      });
+
+      loadProjects();
+
+      const onProjectsModeChange = () => {
+        updateBrandVisibility();
+        loadProjects();
+      };
+      if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener("change", onProjectsModeChange);
+      } else if (mobileQuery.addListener) {
+        mobileQuery.addListener(onProjectsModeChange);
+      }
+    </script>
+  </body>
+</html>

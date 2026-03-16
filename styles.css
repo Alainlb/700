@@ -1,0 +1,340 @@
+@font-face {
+  font-family: "Eurostile";
+  src: url("./assets/static/fonts/Eurostile-Reg.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --border: #8f8f8f;
+  --text: #8f8f8f;
+  --bg: #080808;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #050609 url("./assets/backgrounds/desktop/background.jpg") center center / cover no-repeat
+    fixed;
+  color: var(--text);
+  font-family: "Eurostile", sans-serif;
+}
+
+.bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 220ms linear;
+  pointer-events: none;
+}
+
+.bg-video.is-ready {
+  opacity: 1;
+}
+
+.bg-video-mobile {
+  display: none;
+}
+
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.frame {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  border: 0;
+  margin: 0;
+}
+
+.brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(58vw, 760px);
+  padding: 0;
+  z-index: 2;
+}
+
+.brand-asset {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.brand-mobile {
+  display: none;
+}
+
+.project-cloud {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.project-window {
+  position: absolute;
+  width: 248px;
+  height: 154px;
+  min-width: 180px;
+  min-height: 118px;
+  background: rgba(8, 8, 8, 0.84);
+  border: 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+  overflow: hidden;
+  user-select: none;
+}
+
+.project-window.dragging,
+.project-window.resizing {
+  opacity: 0.95;
+}
+
+.project-window-bar {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-bottom: 0;
+  background: rgba(18, 18, 18, 0.88);
+  cursor: grab;
+  touch-action: none;
+}
+
+.project-window.dragging .project-window-bar {
+  cursor: grabbing;
+}
+
+.project-window-title {
+  margin: 0;
+  color: #c8c8c8;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-window-content {
+  width: 100%;
+  height: calc(100% - 22px);
+  background: #000;
+}
+
+.project-window-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #000;
+}
+
+.project-resize-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  z-index: 5;
+  touch-action: none;
+}
+
+.project-resize-nw {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.project-resize-ne {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
+}
+
+.project-resize-sw {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
+}
+
+.project-resize-se {
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
+}
+
+.project-mobile-item {
+  display: none;
+}
+
+.project-mobile-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+}
+
+.links {
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  bottom: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  z-index: 4;
+}
+
+.links a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.links a::before {
+  content: none;
+}
+
+.links a:hover {
+  color: #c4c4c4;
+}
+
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  body {
+    background-image: url("./assets/backgrounds/mobile/background.jpg");
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+
+  .bg-video-desktop {
+    display: none;
+  }
+
+  .bg-video-mobile {
+    display: block;
+    object-fit: cover;
+    object-position: left center;
+  }
+
+  .brand-desktop {
+    display: none;
+  }
+
+  .brand-mobile {
+    display: block;
+  }
+
+  .frame {
+    margin: 0;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .brand {
+    top: 50%;
+    width: min(92vw, 540px);
+  }
+
+  .project-cloud {
+    top: 56px;
+    right: 10px;
+    bottom: 56px;
+    left: auto;
+    width: min(44vw, 280px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    pointer-events: auto;
+    z-index: 5;
+    padding-right: 2px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .project-window {
+    display: none;
+  }
+
+  .project-mobile-item {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: rgba(8, 8, 8, 0.82);
+    overflow: hidden;
+  }
+
+  .project-window-title {
+    font-size: 7px;
+  }
+
+  .links {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 0;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 10px;
+    flex-wrap: nowrap;
+    max-width: none;
+  }
+
+  .links a {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .links a::before {
+    content: none;
+  }
+}
+
+/* ── About page ── */
+
+.about-page {
+  background: #050609 url("./assets/backgrounds/about/about.jpg") center center / cover no-repeat
+    fixed;
+}
+
+.about-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  .about-page {
+    background-image: url("./assets/backgrounds/about/about-mobile.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-attachment: scroll;
+  }
+}
