@@ -396,7 +396,50 @@
           item.style.display = "none";
         });
 
+        /* Overlay for play/pause feedback */
+        const overlay = document.createElement("div");
+        overlay.className = "project-mobile-overlay";
+        overlay.innerHTML = '<span class="project-mobile-icon">&#9654;&#xFE0E;</span>';
+
+        /* Tap = pause / play */
+        let tapTimer = null;
+        item.addEventListener("click", (e) => {
+          e.preventDefault();
+          if (tapTimer) {
+            /* Double tap → fullscreen */
+            clearTimeout(tapTimer);
+            tapTimer = null;
+            if (video.requestFullscreen) video.requestFullscreen();
+            else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+            return;
+          }
+          tapTimer = setTimeout(() => {
+            tapTimer = null;
+            if (video.paused) {
+              video.play().catch(() => {});
+              item.classList.remove("is-paused");
+            } else {
+              video.pause();
+              item.classList.add("is-paused");
+            }
+          }, 250);
+        });
+
+        /* Show native controls in fullscreen so user can unmute / scrub */
+        video.addEventListener("fullscreenchange", () => {
+          video.controls = !!document.fullscreenElement;
+          if (!document.fullscreenElement) {
+            video.muted = true;
+            video.controls = false;
+          }
+        });
+        video.addEventListener("webkitendfullscreen", () => {
+          video.muted = true;
+          video.controls = false;
+        });
+
         item.appendChild(video);
+        item.appendChild(overlay);
         return item;
       };
 
