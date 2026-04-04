@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,22 +19,82 @@
     <link rel="icon" href="assets/static/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/static/apple-touch-icon.png" />
 
-    <link rel="stylesheet" href="styles.css?v=20260313-1" />
+    <link rel="stylesheet" href="styles.css?v=20260326-1" />
   </head>
   <body class="about-page">
-    <div class="bg-overlay" aria-hidden="true"></div>
 
-    <main class="frame">
-      <section class="about-content" aria-label="About SEVENHUNDRED">
-        <!-- Background image carries the visual content (logos + copy).
-             Replace assets/backgrounds/about/about.jpg with your artwork. -->
-      </section>
+    <main class="frame about-frame">
+      <!-- SEVENHUNDRED header -->
+      <h1 class="about-hero">SEVENHUNDRED</h1>
 
-      <nav class="links" aria-label="Footer de contacto">
-        <a href="index.html">SEVENHUNDRED</a>
-        <span class="links-tagline">TECHNOLOGY IS A TOOL, NOT A TAGLINE</span>
-        <a href="mailto:hello@weare700.com">HELLO@WEARE700.COM</a>
+      <!-- Nav links -->
+      <nav class="about-nav">
+        <a href="index.html">&bull; WORK</a>
+        <a href="mailto:hello@weare700.com">&bull; CONTACT</a>
       </nav>
+
+      <!-- Three-column body -->
+      <div class="about-body">
+        <!-- Left: ZISSOU -->
+        <div class="about-col-left">
+          <img class="about-logo-left" src="assets/static/logos/zissou.svg" alt="ZISSOU" />
+        </div>
+
+        <!-- Center: copy -->
+        <div class="about-col-center">
+          <p>THIS PROJECT IS THE UNION OF GROOVE AND ZISSOU: TWO COMPLEMENTARY STUDIOS COMBINING THEIR STRENGTHS INTO A SINGLE, FOCUSED OPERATION. GROOVE BRINGS CREATIVE DIRECTION, DESIGN SYSTEMS, AND BRAND STORYTELLING. ZISSOU BRINGS DEEP POSTPRODUCTION EXPERTISE&mdash;MOTION, VFX, FINISHING, AND HIGH-END TECHNICAL EXECUTION.</p>
+
+          <p>TOGETHER, WE WORK DIRECTLY WITH BRANDS AND IN-HOUSE TEAMS TO BUILD CLEAR VISUAL WORLDS AND DELIVER THEM END-TO-END, WITHOUT THE FRICTION OF TRADITIONAL AGENCY CHAINS. THE APPROACH IS PRECISE AND CONTROLLED: STRONG CONCEPTS, RIGOROUS CRAFT, AND TECHNOLOGY USED AS A TOOL&mdash;ESPECIALLY AI&mdash;GUIDED BY REAL POSTPRODUCTION KNOWLEDGE.</p>
+
+          <p>THE RESULT IS A STUDIO BUILT FOR CONSISTENCY AND PERFORMANCE ACROSS EVERY TOUCHPOINT: IDENTITY, DIGITAL, CAMPAIGNS, AND MOTION.</p>
+        </div>
+
+        <!-- Right: Groove -->
+        <div class="about-col-right">
+          <img class="about-logo-right" src="assets/static/logos/groove.svg" alt="Groove" />
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="about-footer">
+        <div class="about-footer-left">
+          <a href="https://instagram.com/zissou.tv" target="_blank" rel="noopener">@ZISSOU.TV</a>
+          <a href="https://instagram.com/groove_std" target="_blank" rel="noopener">@GROOVE_STD</a>
+        </div>
+        <div class="about-footer-center">
+          <a href="https://instagram.com/weare_700" target="_blank" rel="noopener">@WEARE_700</a>
+        </div>
+        <div class="about-footer-right">
+          <a href="mailto:hello@weare700.com">HELLO@WEARE700.COM</a>
+        </div>
+      </footer>
     </main>
+
+    <script>
+      /* Auto-fit SEVENHUNDRED to fill container width */
+      (function () {
+        const hero = document.querySelector('.about-hero');
+        if (!hero) return;
+        const text = hero.textContent;
+        const styles = getComputedStyle(hero);
+
+        function fit() {
+          const target = hero.parentElement.clientWidth - 46; /* 28px left + 18px right */
+
+          /* Measure text width at a known size using canvas */
+          const cvs = document.createElement('canvas').getContext('2d');
+          cvs.font = '100px ' + styles.fontFamily;
+          const measured = cvs.measureText(text).width;
+
+          /* Scale proportionally, apply letter-spacing correction */
+          const size = (target / measured) * 100;
+          hero.style.fontSize = size + 'px';
+        }
+
+        /* Wait for font to load */
+        document.fonts.ready.then(function () { fit(); });
+        window.addEventListener('resize', fit);
+      })();
+    </script>
   </body>
 </html>
