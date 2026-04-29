@@ -1,26 +1,3 @@
 {
-  "projects": [
-    {
-      "id": "fc-barcelona",
-      "folder": "assets/projects/FC BARCELONA",
-      "file": "LA Flor del cruyff - FC barcelona.mp4"
-    },
-    {
-      "id": "oakley-meta",
-      "folder": "assets/projects/oakley-meta",
-      "file": "oakley_meta_vfx_post_production.mp4",
-      "poster": "assets/projects/oakley-meta/poster.jpg"
-    },
-    {
-      "id": "saiko-x-jbalvin-antiesta-tico",
-      "folder": "assets/projects/SAIKO X JBALVIN - Antiesta\u0301tico",
-      "file": "SAIKO-JBALVIN-Antiestatico.mp4",
-      "poster": "assets/projects/SAIKO X JBALVIN - Antiesta\u0301tico/poster.png"
-    },
-    {
-      "id": "stranger-things-zissou",
-      "folder": "assets/projects/STRANGER THINGS - ZISSOU",
-      "file": "StrangerThings - Zissou.mp4"
-    }
-  ]
+  "projects": []
 }
